@@ -28,17 +28,18 @@ export const useMount = (callback: () => void) => {
 
 /*
 * 什么时候定义hook,当函数里使用到hook的时候就定义hook,其他定义成普通函数即可
+* <V>:传入泛型V,参数value也是该类型,返回值就可以自动推断(也是V)
 *
 * */
-export const useDebounce = (value: any, delay: number) => {
+export const useDebounce = <V>(value: V, delay?: number) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
         // 每次在value变化以后,setValue,并且设置一个定时器
         const timeout = setTimeout(() => setDebouncedValue(value), delay);
         /*
-        * useEffect的return函数是上一次useEffect执行完后的回调,做一些清理的任务
-        * clearTimeout(timeout)是清除上一次的定时器
+        * useEffect的return函数相当于componentWillUnmount,做一些清理的任务
+        * 在delay时间内clearTimeout(timeout)是清除之前的定时器
         * */
         return () => clearTimeout(timeout);
     }, [value]);
