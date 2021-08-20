@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { loadDevTools } from "jira-dev-tool";
+import { AppProviders } from "context";
 
 loadDevTools(() =>
     ReactDOM.render(
         <React.StrictMode>
-            <App />
+            <AppProviders>        {/* index.tsx包裹全局的provider,子组件共享全局数据 */}
+                <App />
+            </AppProviders>
         </React.StrictMode>,
         document.getElementById("root")
     )
