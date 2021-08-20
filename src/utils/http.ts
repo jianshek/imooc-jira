@@ -53,7 +53,10 @@ export const http = async (
 
 export const useHttp = () => {
     const { user } = useAuth();
-    // TODO 讲解 TS 操作符
+    /**
+     * 联合类型
+     * Parameters<typeof http>:获取http的参数类型
+     * */
     return (...[endpoint, config]: Parameters<typeof http>) =>
         http(endpoint, { ...config, token: user?.token });
 };
