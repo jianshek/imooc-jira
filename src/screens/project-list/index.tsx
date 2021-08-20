@@ -3,6 +3,7 @@ import {List} from "./list";
 import {useEffect, useState} from "react";
 import {cleanObject, useMount, useDebounce} from "../../utils";
 import * as qs from "qs";
+import { useHttp } from "utils/http";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -14,6 +15,7 @@ export const ProjectListScreen = () => {
         personId: ''
     })
     const [list, setList] = useState([])
+    const client = useHttp(); //网络请求
 
     /*
     * SearchPanel中的输入框快速输入时,param变化很快,但是不能每次param变化都去请求数据
@@ -22,20 +24,11 @@ export const ProjectListScreen = () => {
     const debouncedParam = useDebounce(param, 1000)
 
     useEffect(() => {
-        //qs:参数自动使用&拼接
-        fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`).then(async response => {
-            if (response.ok) {
-                setList(await response.json())
-            }
-        })
+        client("projects", { data: cleanObject(debouncedParam) }).then(setList);
     }, [debouncedParam]) //debouncedParam1秒钟才会变化一次
 
     useMount(() => {
-        fetch(`${apiUrl}/users`).then(async response => {
-            if (response.ok) {
-                setUsers(await response.json())
-            }
-        })
+        client("users").then(setUsers);
     })
 
     return <div>
