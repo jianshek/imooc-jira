@@ -2,8 +2,8 @@ import {SearchPanel} from "./search-panel";
 import {List} from "./list";
 import {useEffect, useState} from "react";
 import {cleanObject, useMount, useDebounce} from "../../utils";
-import * as qs from "qs";
 import { useHttp } from "utils/http";
+import styled from "@emotion/styled";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -31,8 +31,13 @@ export const ProjectListScreen = () => {
         client("users").then(setUsers);
     })
 
-    return <div>
+    return <Container>
+        <h1>项目列表</h1>
         <SearchPanel users={users} param={param} setParam={setParam}/>
         <List users={users} list={list}/>
-    </div>
+    </Container>
 }
+
+const Container = styled.div`
+   padding: 3.2rem;
+ `;
