@@ -12,8 +12,13 @@ const defaultInitialState: State<null> = {
     error: null,
 };
 
+const defaultConfig = {
+    throwOnError: false,  //是否throw error,
+};
+
 //自定义异步请求hook
-export const useAsync = <D>(initialState?: State<D>) => {
+export const useAsync = <D>(initialState?: State<D>,  initialConfig?: typeof defaultConfig) => {
+    const config = { ...defaultConfig, ...initialConfig };
     const [state, setState] = useState<State<D>>({
         ...defaultInitialState,
         ...initialState,
@@ -46,6 +51,7 @@ export const useAsync = <D>(initialState?: State<D>) => {
             })
             .catch((error) => {
                 setError(error);
+                if (config.throwOnError) return Promise.reject(error);  //外界可以catch到error
                 return error;
             });
     };
