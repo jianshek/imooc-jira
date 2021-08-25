@@ -1,7 +1,13 @@
 import React, { ReactNode } from "react";
 import { AuthProvider } from "context/auth-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 //提供登录认证的provider
 export const AppProviders = ({ children }: { children: ReactNode }) => {
-    return <AuthProvider>{children}</AuthProvider>;
+
+    const queryClient = new QueryClient();
+
+    return <QueryClientProvider client={queryClient}>
+        <AuthProvider>{children}</AuthProvider>
+    </QueryClientProvider>
 };

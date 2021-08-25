@@ -4,37 +4,36 @@ import {useEffect, useState} from "react";
 import {cleanObject, useMount, useDebounce} from "../../utils";
 import { useHttp } from "utils/http";
 import styled from "@emotion/styled";
+import { Typography } from "antd";
+import { useProjects } from "utils/project";
+import { useUsers } from "utils/user";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export const ProjectListScreen = () => {
-    const [users, setUsers] = useState([])
 
     const [param, setParam] = useState({
         name: '',
         personId: ''
     })
-    const [list, setList] = useState([])
-    const client = useHttp(); //网络请求
 
     /*
     * SearchPanel中的输入框快速输入时,param变化很快,但是不能每次param变化都去请求数据
     * debouncedParam:param变化一秒后返回新的param
     * */
-    const debouncedParam = useDebounce(param, 1000)
-
-    useEffect(() => {
-        client("projects", { data: cleanObject(debouncedParam) }).then(setList);
-    }, [debouncedParam]) //debouncedParam1秒钟才会变化一次
-
-    useMount(() => {
-        client("users").then(setUsers);
-    })
+    const debouncedParam = useDebounce(param, 1000);
+    //data: list 给data起别名为list
+    const { isLoading, error, data: list } = useProjects(debouncedParam);
+    const { data: users } = useUsers();
 
     return <Container>
         <h1>项目列表</h1>
-        <SearchPanel users={users} param={param} setParam={setParam}/>
-        <List users={users} list={list}/>
+        <SearchPanel users={users || []} param={param} setParam={setParam} />
+        {error ? (
+            <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+        ) : null}
+        {/* 因为List组件ListProps继承TableProps,所以直接传Table的属性loading和dataSource即可,{...props}会展开对应的属性传入给Table */}
+        <List loading={isLoading} users={users || []} dataSource={list || []} />
     </Container>
 }
 
