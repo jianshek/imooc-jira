@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 
 export const isVoidObj = (value: unknown) => value === undefined || value === null || value === "";
 
@@ -52,3 +52,28 @@ export const useDebounce = <V>(value: V, delay?: number) => {
      * */
     return debouncedValue;
 };
+
+/**
+ * 改变页面标题
+ * keepOnUnmount:页面卸载时,是否保持该标题
+ * */
+export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
+
+    //useRef:返回该组件
+    const oldTitle = useRef(document.title).current;
+    // 页面加载时: 旧title
+    // 加载后：新title
+    useEffect(()=>{
+        document.title = title;
+    },[title]);
+
+    useEffect(() => {
+        return () => {  //页面卸载时
+            if (!keepOnUnmount) {
+                // 如果不指定依赖，读到的就是旧title
+                document.title = oldTitle;
+            }
+        };
+    }, [keepOnUnmount, oldTitle]);
+
+}
