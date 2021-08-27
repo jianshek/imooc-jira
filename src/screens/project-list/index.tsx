@@ -7,15 +7,15 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
+import { useUrlQueryParam } from "utils/url";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export const ProjectListScreen = () => {
     useDocumentTitle('项目列表',false);
-    const [param, setParam] = useState({
-        name: '',
-        personId: ''
-    })
+    // 基本类型，可以放到依赖里；组件状态，可以放到依赖里；非组件状态的对象，绝不可以放到依赖里
+    // https://codesandbox.io/s/keen-wave-tlz9s?file=/src/App.js
+    const [param, setParam] = useUrlQueryParam(["name", "personId"]);
 
     /*
     * SearchPanel中的输入框快速输入时,param变化很快,但是不能每次param变化都去请求数据
