@@ -65,7 +65,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     return (
         <AuthContext.Provider
             children={children}
-            value={{user, login, register, logout}}
+            value={{user, login, register, logout}}    //value:向外界提供的数据
         />
     );
 };
