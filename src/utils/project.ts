@@ -10,11 +10,52 @@ import { useHttp } from "utils/http";
 export const useProjects = (param?: Partial<Project>) => {
     const client = useHttp();
     const { run, ...result } = useAsync<Project[]>();
+    //返回一个函数promise
+    const fetchProjects = () =>
+        client("projects", { data: cleanObject(param || {}) });
 
     useEffect(() => {
-        run(client("projects", { data: cleanObject(param || {}) }));
+        run(fetchProjects(), {
+            retry: fetchProjects,
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [param]);
 
     return result;
+};
+
+//编辑项目
+export const useEditProject = () => {
+    const { run, ...asyncResult } = useAsync();
+    const client = useHttp();
+    const mutate = (params: Partial<Project>) => {
+        return run(
+            client(`projects/${params.id}`, {
+                data: params,
+                method: "PATCH",
+            })
+        );
+    };
+    return {
+        mutate,
+        ...asyncResult,
+    };
+};
+
+//添加项目
+export const useAddProject = () => {
+    const { run, ...asyncResult } = useAsync();
+    const client = useHttp();
+    const mutate = (params: Partial<Project>) => {
+        return run(
+            client(`projects/${params.id}`, {
+                data: params,
+                method: "POST",
+            })
+        );
+    };
+    return {
+        mutate,
+        ...asyncResult,
+    };
 };

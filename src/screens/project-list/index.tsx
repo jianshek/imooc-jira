@@ -23,7 +23,7 @@ export const ProjectListScreen = () => {
     * */
     const debouncedParam = useDebounce(param, 1000);
     //data: list 给data起别名为list
-    const { isLoading, error, data: list } = useProjects(debouncedParam);
+    const { isLoading, error, data: list, retry } = useProjects(debouncedParam);
     const { data: users } = useUsers();
 
     return <Container>
@@ -33,7 +33,7 @@ export const ProjectListScreen = () => {
             <Typography.Text type={"danger"}>{error.message}</Typography.Text>
         ) : null}
         {/* 因为List组件ListProps继承TableProps,所以直接传Table的属性loading和dataSource即可,{...props}会展开对应的属性传入给Table */}
-        <List loading={isLoading} users={users || []} dataSource={list || []} />
+        <List loading={isLoading} refresh={retry} users={users || []} dataSource={list || []} />
     </Container>
 }
 
