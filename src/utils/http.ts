@@ -1,7 +1,7 @@
 import qs from "qs";
 import * as auth from "auth-provider";
 import { useAuth } from "context/auth-context";
-
+import { useCallback } from "react";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 //RequestInit:fetch请求配置类型
@@ -56,7 +56,11 @@ export const useHttp = () => {
     /**
      * 联合类型
      * Parameters<typeof http>:获取http的参数类型
+     * useCallback和useMemo一样,函数使用useCallback,引用类型使用useMemo
      * */
-    return (...[endpoint, config]: Parameters<typeof http>) =>
-        http(endpoint, { ...config, token: user?.token });
+    return useCallback(
+        (...[endpoint, config]: Parameters<typeof http>) =>
+            http(endpoint, { ...config, token: user?.token }),
+        [user?.token]
+    );
 };
