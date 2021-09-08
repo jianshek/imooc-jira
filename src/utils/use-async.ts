@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback,useReducer, useState } from "react";
 import { useMountedRef } from "utils/index";
 
 interface State<D> {
@@ -17,14 +17,30 @@ const defaultConfig = {
     throwOnError: false,  //是否throw error,
 };
 
+const useSafeDispatch = <T>(dispatch: (...args: T[]) => void) => {
+    const mountedRef = useMountedRef();
+    return useCallback(
+        (...args: T[]) => (mountedRef.current ? dispatch(...args) : void 0),  //void 0 相当于undefined,啥也不干
+        [dispatch, mountedRef]
+    );
+};
+
 //自定义异步请求hook
 export const useAsync = <D>(initialState?: State<D>,  initialConfig?: typeof defaultConfig) => {
     const config = { ...defaultConfig, ...initialConfig };
-    const [state, setState] = useState<State<D>>({
-        ...defaultInitialState,
-        ...initialState,
-    });
-    const mountedRef = useMountedRef();
+    /**
+     * 一般来说,单个变量使用useState,多个变量相互关联使用useReducer(stat,data,error,三者相互关联)
+     * useReducer,第一个参数传state,第二个传action
+     * https://www.jianshu.com/p/14e429e29798
+     * */
+    const [state, dispatch] = useReducer(
+        (state: State<D>, action: Partial<State<D>>) => ({ ...state, ...action }),
+        {
+            ...defaultInitialState,
+            ...initialState,
+        }
+    );
+    const safeDispatch = useSafeDispatch(dispatch);
     // useState直接传入函数的含义是：惰性初始化；所以，要用useState保存函数，不能直接传入函数
     // https://codesandbox.io/s/blissful-water-230u4?file=/src/App.js
     //useState传入函数,第一次执行时就会执行里面的函数,返回函数() => {}给retry
@@ -33,22 +49,22 @@ export const useAsync = <D>(initialState?: State<D>,  initialConfig?: typeof def
 
     const setData = useCallback(
         (data: D) =>
-            setState({
+            safeDispatch({
                 data,
                 stat: "success",
                 error: null,
             }),
-        []
+        [safeDispatch]
     );
 
     const setError = useCallback(
         (error: Error) =>
-            setState({
+            safeDispatch({
                 error,
                 stat: "error",
                 data: null,
             }),
-        []
+        [safeDispatch]
     );
 
     // run 用来触发异步请求
@@ -62,12 +78,10 @@ export const useAsync = <D>(initialState?: State<D>,  initialConfig?: typeof def
                     run(runConfig?.retry(), runConfig);
                 }
             });
-            setState((prevState) => ({ ...prevState, stat: "loading" }));
+            safeDispatch({ stat: "loading" });
             return promise
                 .then((data) => {
-                    if (mountedRef.current) {  //组件没卸载再赋值
-                        setData(data);
-                    }
+                    setData(data);
                     return data;
                 })
                 .catch((error) => {
@@ -77,7 +91,7 @@ export const useAsync = <D>(initialState?: State<D>,  initialConfig?: typeof def
                     return error;
                 });
         },
-        [config.throwOnError, mountedRef, setData, setError]
+        [config.throwOnError, safeDispatch, setData, setError]
     );
 
     return {
