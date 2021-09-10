@@ -29,30 +29,14 @@ export const AuthenticatedApp = () => {
     const [projectModalOpen, setProjectModalOpen] = useState(false); //是否显示modal
     return (
         <Container>
-            <PageHeader projectButton={
-                <ButtonNoPadding
-                    onClick={() => setProjectModalOpen(true)}
-                    type={"link"}
-                >
-                    创建项目
-                </ButtonNoPadding>
-            }/>
+            <PageHeader />
             <Main>
                 <Router>
                     <Routes>
                         <Route
                             path={"/projects"}
                             element={
-                                <ProjectListScreen
-                                    projectButton={
-                                        <ButtonNoPadding
-                                            onClick={() => setProjectModalOpen(true)}
-                                            type={"link"}
-                                        >
-                                            创建项目
-                                        </ButtonNoPadding>
-                                    }
-                                />
+                                <ProjectListScreen />
                             }
                         />
                         <Route
@@ -63,16 +47,12 @@ export const AuthenticatedApp = () => {
                     </Routes>
                 </Router>
             </Main>
-            <ProjectModal
-                projectModalOpen={projectModalOpen}
-                onClose={() => setProjectModalOpen(false)}
-            />
+            <ProjectModal />
         </Container>
     );
 };
 
-const PageHeader = (props: { projectButton: JSX.Element }) => {
-    const {logout, user} = useAuth();
+const PageHeader = () => {
 
     return (
         <Header between={true}>
@@ -80,7 +60,7 @@ const PageHeader = (props: { projectButton: JSX.Element }) => {
                 <ButtonNoPadding type={"link"} onClick={resetRoute}>
                     <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"}/>
                 </ButtonNoPadding>
-                <ProjectPopover {...props} />
+                <ProjectPopover />
                 <span>用户</span>
             </HeaderLeft>
             <HeaderRight>
