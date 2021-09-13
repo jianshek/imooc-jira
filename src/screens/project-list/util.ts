@@ -13,3 +13,18 @@ export const useProjectsSearchParams = () => {
         setParam,
     ] as const;
 };
+
+export const useProjectModal = () => {
+    const [{ projectCreate }, setProjectCreate] = useUrlQueryParam([
+        "projectCreate",  //projectCreate:url中的参数
+    ]);
+
+    const open = () => setProjectCreate({ projectCreate: true }); //设置参数的值
+    const close = () => setProjectCreate({ projectCreate: false });//设置参数的值,undefined相当于从url中删除此参数
+
+    return {
+        projectModalOpen: projectCreate === "true",
+        open,
+        close,
+    };
+};
