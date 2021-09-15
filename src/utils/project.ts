@@ -3,63 +3,65 @@ import { Project } from "screens/project-list/list";
 import { useCallback, useEffect } from "react";
 import { cleanObject } from "utils/index";
 import { useHttp } from "utils/http";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 /**
  * Partial<D>使用D的部分类型
  * */
 export const useProjects = (param?: Partial<Project>) => {
     const client = useHttp();
-    const { run, ...result } = useAsync<Project[]>();
-    /*
-    返回一个函数promise
-    * useCallback和useMemo一样,函数使用useCallback,引用类型使用useMemo
-    * */
-    const fetchProjects = useCallback(
-        () => client("projects", { data: cleanObject(param || {}) }),
-        [param, client]
+    /**
+     * useQuery,在内存中缓存数据,使用hook,比redux更贴合
+     * ["projects", param]:projects相当于缓存的key,param变化时去请求数据(client请求)
+     * */
+    return useQuery<Project[]>(["projects", param], () =>
+        client("projects", { data: param })
     );
-
-    useEffect(() => {
-        run(fetchProjects(), {
-            retry: fetchProjects,
-        });
-    }, [param, run, fetchProjects]);
-
-    return result;
 };
 
 //编辑项目
 export const useEditProject = () => {
-    const { run, ...asyncResult } = useAsync();
     const client = useHttp();
-    const mutate = (params: Partial<Project>) => {
-        return run(
+    const queryClient = useQueryClient();
+    /**
+     * useMutation:异步请求数据
+     * */
+    return useMutation(
+        (params: Partial<Project>) =>
             client(`projects/${params.id}`, {
-                data: params,
                 method: "PATCH",
-            })
-        );
-    };
-    return {
-        mutate,
-        ...asyncResult,
-    };
+                data: params,
+            }),
+        {
+            onSuccess: () => queryClient.invalidateQueries("projects"), //请求成功后删除之前的缓存,刷新数据
+        }
+    );
 };
 
 //添加项目
 export const useAddProject = () => {
-    const { run, ...asyncResult } = useAsync();
     const client = useHttp();
-    const mutate = (params: Partial<Project>) => {
-        return run(
-            client(`projects/${params.id}`, {
+    const queryClient = useQueryClient();
+    //useMutation:异步请求数据
+    return useMutation(
+        (params: Partial<Project>) =>
+            client(`projects`, {
                 data: params,
                 method: "POST",
-            })
-        );
-    };
-    return {
-        mutate,
-        ...asyncResult,
-    };
+            }),
+        {
+            onSuccess: () => queryClient.invalidateQueries("projects"),//请求成功后删除之前的缓存,刷新数据
+        }
+    );
+};
+
+export const useProject = (id?: number) => {
+    const client = useHttp();
+    return useQuery<Project>(
+        ["project", { id }],
+        () => client(`projects/${id}`),
+        { //配置文件,id存在的时候再请求数据
+            enabled: Boolean(id),
+        }
+    );
 };

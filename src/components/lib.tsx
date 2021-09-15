@@ -34,14 +34,30 @@ const FullPage = styled.div`
    align-items: center;
  `;
 
+//页面loading
 export const FullPageLoading = () => (
     <FullPage>
         <Spin size={"large"} />
     </FullPage>
 );
 
+//页面错误
 export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
     <FullPage>
-        <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+        <ErrorBox error={error} />
     </FullPage>
 );
+
+/**
+ * 类型守卫
+ * 判断是否是Error类型,如果有value.message,那么value is Error
+ * is和bool的区别:https://segmentfault.com/a/1190000022883470
+ * */
+const isError = (value: any): value is Error => value?.message;
+
+export const ErrorBox = ({ error }: { error: unknown }) => {
+    if (isError(error)) {
+        return <Typography.Text type={"danger"}>{error?.message}</Typography.Text>;
+    }
+    return null;
+};

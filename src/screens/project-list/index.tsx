@@ -8,7 +8,7 @@ import {Button, Typography} from "antd";
 import {useProjects} from "utils/project";
 import {useUsers} from "utils/user";
 import {useProjectsSearchParams,useProjectModal} from "screens/project-list/util";
-import { ButtonNoPadding, Row } from "components/lib";
+import { ButtonNoPadding, Row, ErrorBox } from "components/lib";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -24,7 +24,7 @@ export const ProjectListScreen = () => {
     * */
     const debouncedParam = useDebounce(param, 1000);
     //data: list 给data起别名为list
-    const {isLoading, error, data: list, retry} = useProjects(debouncedParam);
+    const { isLoading, error, data: list } = useProjects(debouncedParam);
     const {data: users} = useUsers();
     const { open } = useProjectModal();
     return <Container>
@@ -35,11 +35,9 @@ export const ProjectListScreen = () => {
             </ButtonNoPadding>
         </Row>
         <SearchPanel users={users || []} param={param} setParam={setParam}/>
-        {error ? (
-            <Typography.Text type={"danger"}>{error.message}</Typography.Text>
-        ) : null}
+        <ErrorBox error={error} />
         {/* 因为List组件ListProps继承TableProps,所以直接传Table的属性loading和dataSource即可,{...props}会展开对应的属性传入给Table */}
-        <List loading={isLoading} refresh={retry} users={users || []}
+        <List loading={isLoading} users={users || []}
               dataSource={list || []}/>
     </Container>
 }
