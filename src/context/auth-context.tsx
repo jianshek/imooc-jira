@@ -8,6 +8,7 @@ import { useMount } from "utils";
 import { useAsync } from "utils/use-async";
 import { FullPageErrorFallback, FullPageLoading } from "components/lib";
 import {User} from "../types/user";
+import { useQueryClient } from "react-query";
 
 interface AuthForm {
     username: string;
@@ -44,11 +45,14 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         run,
         setData: setUser,
     } = useAsync<User | null>();
-
+    const queryClient = useQueryClient();
     // setUser:参数省略,相当于 (user)=>setUser(user)
     const login = (form: AuthForm) => auth.login(form).then(setUser);
     const register = (form: AuthForm) => auth.register(form).then(setUser);
-    const logout = () => auth.logout().then(() => setUser(null));
+    const logout = () => auth.logout().then(() => {
+        setUser(null);
+        queryClient.clear();  //清空缓存的数据
+    });
     //页面刚加载时获取用户数据
     useMount(() => {
         run(bootstrapUser());
