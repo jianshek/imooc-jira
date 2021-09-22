@@ -1,5 +1,4 @@
 import { useAsync } from "utils/use-async";
-import { Project } from "screens/project-list/list";
 import { useCallback, useEffect } from "react";
 import { cleanObject } from "utils/index";
 import { useHttp } from "utils/http";
@@ -9,6 +8,7 @@ import {
     useDeleteConfig,
     useEditConfig,
 } from "utils/use-optimistic-options";
+import {Project} from "../types/project";
 
 /**
  * Partial<D>使用D的部分类型
@@ -68,7 +68,7 @@ export const useDeleteProject = (queryKey: QueryKey) => {
 
 export const useProject = (id?: number) => {
     const client = useHttp();
-    return useQuery<Project>(
+    return useQuery(
         ["project", { id }],
         () => client(`projects/${id}`),
         { //配置文件,id存在的时候再请求数据

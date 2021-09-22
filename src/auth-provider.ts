@@ -2,7 +2,7 @@
 
 // 模拟登录认证，真实工作中本文件不需要前端开发者开发
 
-import { User } from "screens/project-list/search-panel";
+import {User} from "./types/user";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
