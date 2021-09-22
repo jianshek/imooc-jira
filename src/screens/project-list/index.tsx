@@ -8,7 +8,12 @@ import {Button, Typography} from "antd";
 import {useProjects} from "utils/project";
 import {useUsers} from "utils/user";
 import {useProjectsSearchParams,useProjectModal} from "screens/project-list/util";
-import { ButtonNoPadding, Row, ErrorBox } from "components/lib";
+import {
+    ButtonNoPadding,
+    ErrorBox,
+    Row,
+    ScreenContainer,
+} from "components/lib";
 //process. : yarn start时,使用的是.env.development里的值, yarn build时,使用.env里的值
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -27,7 +32,7 @@ export const ProjectListScreen = () => {
     const { isLoading, error, data: list } = useProjects(debouncedParam);
     const {data: users} = useUsers();
     const { open } = useProjectModal();
-    return <Container>
+    return <ScreenContainer>
         <Row between={true}>
             <h1>项目列表</h1>
             <ButtonNoPadding onClick={open} type={"link"}>
@@ -39,9 +44,5 @@ export const ProjectListScreen = () => {
         {/* 因为List组件ListProps继承TableProps,所以直接传Table的属性loading和dataSource即可,{...props}会展开对应的属性传入给Table */}
         <List loading={isLoading} users={users || []}
               dataSource={list || []}/>
-    </Container>
+    </ScreenContainer>
 }
-
-const Container = styled.div`
-   padding: 3.2rem;
- `;
