@@ -5,8 +5,10 @@ import {
     useAddConfig,
     useDeleteConfig,
     useEditConfig,
+    useReorderTaskConfig
 } from "utils/use-optimistic-options";
 import { Project } from "types/project";
+import { SortProps } from "utils/kanban";
 
 //task数据
 export const useTasks = (param?: Partial<Task>) => {
@@ -59,4 +61,14 @@ export const useDeleteTask = (queryKey: QueryKey) => {
             }),
         useDeleteConfig(queryKey)
     );
+};
+//排序
+export const useReorderTask = (queryKey: QueryKey) => {
+    const client = useHttp();
+    return useMutation((params: SortProps) => {
+        return client("tasks/reorder", {
+            data: params,
+            method: "POST",
+        });
+    }, useReorderTaskConfig(queryKey));
 };

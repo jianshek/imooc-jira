@@ -16,6 +16,7 @@ import taskIcon from "assets/task.svg";
 import bugIcon from "assets/bug.svg";
 import { Button, Card, Dropdown, Menu, Modal } from "antd";
 import styled from "@emotion/styled";
+import { Drag, Drop, DropChild } from "components/drag-and-drop";
 
 const TaskTypeIcon = ({ id }: { id: number }) => {
     const { data: taskTypes } = useTaskTypes();
@@ -43,24 +44,44 @@ const TaskCard = ({ task }: { task: Task }) => {
     );
 };
 
-export const KanbanColumn = ({ kanban }: { kanban: Kanban }) => {
+//自定义组件用forwardRef,外界调用时可以使用ref,拖拽重要的属性是ref
+export const KanbanColumn = React.forwardRef<
+    HTMLDivElement,
+    { kanban: Kanban }
+    >(({ kanban, ...props }, ref) => {
     const { data: allTasks } = useTasks(useTasksSearchParams());
     const tasks = allTasks?.filter((task) => task.kanbanId === kanban.id);
     return (
-        <Container>
+        <Container {...props} ref={ref}>
             <Row between={true}>
                 <h3>{kanban.name}</h3>
-                <More kanban={kanban} />
+                <More kanban={kanban} key={kanban.id} />
             </Row>
             <TasksContainer>
-                {tasks?.map((task) => (
-                    <TaskCard task={task} />
-                ))}
+                <Drop
+                    type={"ROW"}
+                    direction={"vertical"}
+                    droppableId={String(kanban.id)}
+                >
+                    <DropChild style={{ minHeight: "1rem" }}>
+                        {tasks?.map((task, taskIndex) => (
+                            <Drag
+                                key={task.id}
+                                index={taskIndex}
+                                draggableId={"task" + task.id}
+                            >
+                                <div>
+                                    <TaskCard key={task.id} task={task} />
+                                </div>
+                            </Drag>
+                        ))}
+                    </DropChild>
+                </Drop>
                 <CreateTask kanbanId={kanban.id} />
             </TasksContainer>
         </Container>
     );
-};
+});
 
 //看板删除组件
 const More = ({ kanban }: { kanban: Kanban }) => {
