@@ -26,7 +26,7 @@ import { UserPopover } from "components/user-popover";
  *
  */
 
-export default () => {
+export default function AuthenticatedApp() {
     return (
         <Container>
             <Router>

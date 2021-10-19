@@ -8,7 +8,7 @@ import left from "assets/left.svg";
 import right from "assets/right.svg";
 import { ErrorBox } from "components/lib";
 
-export default () => {
+export default function UnauthenticatedApp() {
     const [isRegister, setIsRegister] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     return (
