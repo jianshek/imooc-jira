@@ -7,7 +7,6 @@ import {ButtonNoPadding, Row} from "components/lib";
 import {ReactComponent as SoftwareLogo} from "assets/software-logo.svg";
 import {Button, Dropdown, Menu} from "antd";
 import {Navigate, Route, Routes} from "react-router";
-import {BrowserRouter as Router} from "react-router-dom";
 import {ProjectScreen} from "screens/project";
 import {resetRoute} from "utils";
 import {ProjectModal} from "components/project-modal";
@@ -29,7 +28,6 @@ import { UserPopover } from "components/user-popover";
 export default function AuthenticatedApp() {
     return (
         <Container>
-            <Router>
                 <PageHeader />
                 <Main>
                     <Routes>
@@ -42,7 +40,6 @@ export default function AuthenticatedApp() {
                     </Routes>
                 </Main>
                 <ProjectModal />
-            </Router>
         </Container>
     );
 };

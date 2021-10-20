@@ -44,7 +44,7 @@ const FullPage = styled.div`
 //页面loading
 export const FullPageLoading = () => (
     <FullPage>
-        <Spin size={"large"} />
+        <Spin data-testid={"loading"} size={"large"} />
     </FullPage>
 );
 

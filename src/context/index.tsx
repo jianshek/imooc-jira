@@ -1,9 +1,10 @@
-import React, { ReactNode } from "react";
-import { AuthProvider } from "context/auth-context";
-import { QueryClient, QueryClientProvider } from "react-query";  //操作数据
+import React, {ReactNode} from "react";
+import {AuthProvider} from "context/auth-context";
+import {QueryClient, QueryClientProvider} from "react-query";  //操作数据
+import {BrowserRouter as Router} from "react-router-dom";
 
 //提供登录认证的provider
-export const AppProviders = ({ children }: { children: ReactNode }) => {
+export const AppProviders = ({children}: { children?: ReactNode }) => {
 
     const queryClient = new QueryClient({
         defaultOptions: {
@@ -14,6 +15,8 @@ export const AppProviders = ({ children }: { children: ReactNode }) => {
     });
 
     return <QueryClientProvider client={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
+        <Router>
+            <AuthProvider>{children}</AuthProvider>
+        </Router>
     </QueryClientProvider>
 };

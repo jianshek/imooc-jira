@@ -1,6 +1,6 @@
 import {Dropdown, Menu, Table, Modal} from "antd";
 import dayjs from "dayjs";
-import {TableProps} from "antd/es/table";
+import {TableProps} from "antd/lib/table";
 import {Link} from "react-router-dom";
 import {Pin} from "components/pin";
 import {useEditProject, useDeleteProject} from "utils/project";
