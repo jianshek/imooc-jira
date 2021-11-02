@@ -32,7 +32,7 @@ const AuthContext = React.createContext<{
     login: (form: AuthForm) => Promise<void>;
     logout: () => Promise<void>;
 } | undefined>(undefined);
-AuthContext.displayName = "AuthContext";
+AuthContext.displayName = "AuthContext";  //displayName:React DevTools 使用该字符串来确定context要显示的内容。
 
 //创建provider,供子组件使用数据
 export const AuthProvider = ({children}: { children: ReactNode }) => {
