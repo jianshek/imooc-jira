@@ -54,6 +54,7 @@ const Background = styled.div`
    background-image: url(${left}), url(${right});
  `;
 
+//用${xxx},使用xxx变量
 const Header = styled.header`
    background: url(${logo}) no-repeat center;
    padding: 5rem 0;
@@ -61,6 +62,7 @@ const Header = styled.header`
    width: 100%;
  `;
 
+//styled(Card),非react自带组件,需使用括号包裹
 const ShadowCard = styled(Card)`
    width: 40rem;
    min-height: 56rem;
@@ -71,6 +73,7 @@ const ShadowCard = styled(Card)`
    text-align: center;
  `;
 
+//styled.div,div必须是react自带组件
 const Container = styled.div`
    display: flex;
    flex-direction: column;

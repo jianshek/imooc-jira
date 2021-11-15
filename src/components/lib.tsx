@@ -2,6 +2,12 @@ import styled from "@emotion/styled";
 import React from "react";
 import { Button, Spin, Typography } from "antd";
 
+/**
+ * 使用emotion的styled自定义组件
+ * gap,between,marginBottom,自定义属性
+ * 属性使用${}
+ * > * 子组件样式
+ * */
 export const Row = styled.div<{
     gap?: number | boolean;
     between?: boolean;

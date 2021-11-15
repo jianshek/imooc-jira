@@ -44,6 +44,7 @@ export default function AuthenticatedApp() {
     );
 };
 
+//SoftwareLogo:使用svg渲染,而不是使用image标签,svg可以自定义样式
 const PageHeader = () => {
 
     return (
@@ -83,14 +84,17 @@ const User = () => {
     );
 };
 
-
+/*
+grid网格布局
+* grid-template-rows: 6rem 1fr;横向,左边6rem,右边自动填充
+* */
 const Container = styled.div`
    display: grid;
    grid-template-rows: 6rem 1fr;
    height: 100vh;
  `;
 
-// grid-area 用来给grid子元素起名字
+// grid-area 用来给grid子元素起名字,(Row)使用自定义的Row,所以用括号括起来
 const Header = styled(Row)`
    padding: 3.2rem;
    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
