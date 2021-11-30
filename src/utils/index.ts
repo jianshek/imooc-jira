@@ -60,7 +60,7 @@ export const useDebounce = <V>(value: V, delay?: number) => {
  * */
 export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
 
-    //useRef:返回该组件
+    //useRef:返回该组件(第一次赋值后,即便值被改变了,ref.current还是原始值)
     const oldTitle = useRef(document.title).current;
     // 页面加载时: 旧title
     // 加载后：新title

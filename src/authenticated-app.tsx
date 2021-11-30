@@ -36,7 +36,7 @@ export default function AuthenticatedApp() {
                             path={"/projects/:projectId/*"}
                             element={<ProjectScreen />}
                         />
-                        <Navigate to={"/projects"} />
+                        <Navigate to={"/projects"} />   {/* Navigate:默认路由 */}
                     </Routes>
                 </Main>
                 <ProjectModal />

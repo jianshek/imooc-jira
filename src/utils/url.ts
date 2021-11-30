@@ -14,7 +14,7 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
     return [
         useMemo(            //useMemo:监听searchParams的值,改变时,在执行函数,(js是对象比较是地址比较,比如相同的对象,地址不同使用useState会执行函数,useMemo是比较值,值相同时,不执行函数)
             () =>
-                subset(Object.fromEntries(searchParams), stateKeys) as {
+                subset(Object.fromEntries(searchParams), stateKeys) as {  //as:类型转换
                     [key in K]: string;
                 },
             [searchParams, stateKeys]
