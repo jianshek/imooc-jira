@@ -27,8 +27,10 @@ export const bootstrapUser = async () => {
     return user;
 };
 
+//AuthProvider:虽然名称是AuthProvider,但是和provider没有任何关系了,只是一个普通组件
 export const AuthProvider = ({children}: { children: ReactNode }) => {
     const { error, isLoading, isIdle, isError, run } = useAsync<User | null>();
+    // dispatch: (...args: unknown[]) => Promise<User> 设置dispatch的返回promise,这样其他地方调用的时候可以使用.then
     const dispatch: (...args: unknown[]) => Promise<User> = useDispatch();
 
     useMount(() => {
@@ -47,10 +49,11 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 };
 
 export const useAuth = () => {
+    // dispatch: (...args: unknown[]) => Promise<User> 设置dispatch的返回promise,这样其他地方调用的时候可以使用.then
     const dispatch: (...args: unknown[]) => Promise<User> = useDispatch();
     const user = useSelector(selectUser);
     const login = useCallback(
-        (form: AuthForm) => dispatch(authStore.login(form)),
+        (form: AuthForm) => dispatch(authStore.login(form)),  //使用thunk,dispatch异步函数和同步函数没有任何区别
         [dispatch]
     );
     const register = useCallback(
